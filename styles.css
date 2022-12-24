@@ -101,9 +101,10 @@ h1 {
 
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: flex-start;
 
+    overflow: hidden;
 
     background-color: #272727;
     color: #e5e3e3;
@@ -114,6 +115,12 @@ h1 {
 }
 
 .tips-text {
+    padding: 20px;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
     height: 200px;
 }
 
@@ -125,7 +132,7 @@ h1 {
 .close-tips {
     cursor: pointer;
     position: absolute;
-    transform: translateY(-10px) translateX(242px);
+    transform: translateY(-10px) translateX(125px);
 }
 
 .tips-footer {
@@ -147,9 +154,43 @@ h1 {
     flex-direction: row;
 }
 
+input[type="checkbox"]{
+    appearance: none;
+    -webkit-appearance: none;
+}
+
 .tips-startup-checkbox {
-    background-color: #000;
-    border: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    margin-right: 10px;
+    width: 15px;
+    background-color: #272727;
+    border: 1px solid #e5e3e3;
+    border-radius: 4px;
+}
+
+.tips-startup-checkbox:after {
+    height: 13px;
+    content: url('https://api.iconify.design/fluent/checkmark-12-filled.svg?color=%23e5e3e3&width=15&height=13');
+    color: #e5e3e3;
+    display: none;
+}
+
+.tips-startup-checkbox:hover {
+    background-color: #639ec0;
+    border-color: #639ec0;
+}
+
+.tips-startup-checkbox:checked:after {
+    display: block;
+}
+
+.tips-startup-checkbox:checked:hover:after {
+    content: url('https://api.iconify.design/fluent/checkmark-12-filled.svg?color=%23272727&width=15&height=13');
+    color: #272727;
 }
 
 .tooltip-down {
