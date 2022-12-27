@@ -33,6 +33,13 @@ h1 {
     visibility: hidden;
 }
 
+.highlight {
+    font-size: inherit;
+    padding: 1px;
+    font-weight: bold;
+    color: #e5e3e3;
+    background-color: #44baff93;
+}
 .tips-btn {
     margin: 14px;
     font-size: 1em;
@@ -90,14 +97,15 @@ h1 {
 }
 
 .tips-img {
-    width: 300px;
-    transform: translateY(-10px) translateX(-12px);
+    width: 100%;
+    min-width: 300px;
+    height: auto;
 }
 
 .tips-content {
     width: 300px;
     height: 500px;
-    padding: 10px;
+    padding: 0 10px 10px 10px;
 
     display: flex;
     flex-direction: column;
@@ -132,7 +140,13 @@ h1 {
 .close-tips {
     cursor: pointer;
     position: absolute;
-    transform: translateY(-10px) translateX(125px);
+    transform: translateX(125px);
+}
+
+.back-tips {
+    cursor: pointer;
+    position: absolute;
+    transform: translateX(-125px);
 }
 
 .tips-footer {
@@ -196,7 +210,7 @@ input[type="checkbox"]{
 .tooltip-down {
     position: absolute;
     padding: 7px;
-    bottom: 85%;
+    bottom: 90%;
     background-color: #181717;
     color: #e5e3e3;
     display: none;
@@ -209,7 +223,7 @@ input[type="checkbox"]{
     position: absolute;
     content: "";
     top: 99%; 
-    left: 30%;
+    left: 15%;
     border-top: 5px solid #181717;
     border-right: 5px solid transparent;
     border-bottom: 5px solid transparent;
@@ -223,8 +237,8 @@ input[type="checkbox"]{
 .tooltip-tips {
     position: absolute;
     padding: 7px;
-    bottom: 85%;
-    right: 15%;
+    bottom: 90%;
+    right: 40%;
     background-color: #181717;
     color: #e5e3e3;
     display: none;
@@ -245,6 +259,34 @@ input[type="checkbox"]{
 }
 
 .menu-btns:hover > .tooltip-tips {
+    display: inline-block;
+}
+
+.tooltip-settings {
+    position: absolute;
+    padding: 7px;
+    bottom: 90%;
+    right: 5%;
+    background-color: #181717;
+    color: #e5e3e3;
+    display: none;
+    z-index: 1;
+    border-radius: 10px;
+    margin-left: -55px;
+}
+
+.tooltip-settings::after {
+    position: absolute;
+    content: "";
+    top: 99%; 
+    left: 30%;
+    border-top: 5px solid #181717;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid transparent;
+}
+
+.menu-btns:hover > .tooltip-settings {
     display: inline-block;
 }
 
