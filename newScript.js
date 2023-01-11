@@ -7,12 +7,19 @@ const body = document.body;
 
 const density = '       .:-i|=+%O#@';
 
+const downloadBtn = document.getElementById("save-btn");
+const c = document.createElement('canvas');
+const ctx = c.getContext('2d');
+
+var imageWidth;
+var imageHeight;
+
 function map(value, low1, high1, low2, high2) {
     return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
 }
 
-function asciiEffect(ctx, width, height) {
-    const pixels = ctx.getImageData(0, 0, width, height);
+function asciiEffect(ct, width, height) {
+    const pixels = ct.getImageData(0, 0, width, height);
     context.clearRect(0, 0, canvas.width, canvas.height);
     let ascii = ''; //A string to store the mapped ascii characters.
     const cellSize = 10;
@@ -29,16 +36,16 @@ function asciiEffect(ctx, width, height) {
             const charIndex = Math.floor(map(avg, 0, 255, 0, density.length));
             const c = density.charAt(charIndex);
 
-            drawAscii(c, x, y);
+            drawAscii(ct, c, x, y);
         }
     }
 }
 
-function drawAscii(asciiChar, x, y){
-    context.fillStyle = 'white';
-    context.textAlign = "center";
-    context.font = "Courier";
-    context.fillText(asciiChar, x, y);
+function drawAscii(ct, asciiChar, x, y){
+    ct.fillStyle = 'white';
+    ct.textAlign = "center";
+    ct.font = "Courier";
+    ct.fillText(asciiChar, x, y);
 }
 
 fileInput.onchange = e => {
@@ -48,6 +55,8 @@ fileInput.onchange = e => {
     reader.onload = event => {
         const image = new Image();
         image.onload = () => {
+            imageWidth = image.width;
+            imageHeight = image.height;
             canvas.width = image.width;
             canvas.height = image.height;
             context.drawImage(image, 0, 0);
@@ -59,22 +68,15 @@ fileInput.onchange = e => {
     reader.readAsDataURL(file);
 }
 
-// for(let i = 0; i < tipsClose.length; i++){
-//     tipsClose[i].addEventListener('click', function(e) {
-//         for(let j = 0; j < tipsContainer.length; j++){
-//             tipsContainer[j].style.visibility = 'hidden';
-//         }
-//         body.style.overflow = 'visible';
-// });
-// }
+document.getElementById("save-btn").addEventListener('click', function(e) {
+    c.width = imageWidth;
+    c.height = imageHeight;
+    n = new asciiEffect(ctx, c.width, c.height);
 
-for(let i = 0; i < tipsNext.length; i++){
-    tipsNext[i].addEventListener('click', function(e) {
-        for(let j = 0; j < tipsContainer.length; j++){
-            if(tipsContainer[i].style.visibility == 'visible'){
-                tipsContainer[i].style.visibility = 'hidden';
-                tipsContainer[i+1].style.visibility = 'visible';
-            }
-        }
-    });
-}
+    let image = c.toDataURL("image/png", 1.0);
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = "my-ascii-image.png";
+    link.click();
+    link.remove();
+});

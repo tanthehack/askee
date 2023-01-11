@@ -15,6 +15,10 @@ h1 {
     font-size: 2em;
 }
 
+.about {
+    font-size: 1.5em;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -35,11 +39,12 @@ h1 {
 
 .highlight {
     font-size: inherit;
-    padding: 1px;
     font-weight: bold;
     color: #e5e3e3;
-    background-color: #44baff93;
+    border-bottom: 4px solid #44baff93;
+    background-color: transparent;
 }
+
 .tips-btn {
     margin: 14px;
     font-size: 1em;
@@ -135,6 +140,7 @@ h1 {
 .tips-text > p, .tips-text > h1 {
     font-size: 1.5em;
     padding-bottom: 10%;
+    line-height: 1.5em;
 }
 
 .close-tips {
@@ -474,12 +480,15 @@ input[type="checkbox"]{
 .about {
     height: 40%;
     margin-top: 15%;
-    
+    font-size: 1.5em;
     display: flex;
     flex-direction: inherit;
     justify-content: space-around;
 }
 
+.about > p {
+    margin-top: 10%;
+}
 .about > .menu-btns {
     margin: 2px;
 }
