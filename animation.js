@@ -60,3 +60,20 @@ for(let i = 0; i < tipsBack.length; i++){
         }
     });
 }
+
+document.getElementById('settings-btn').addEventListener('click', (e) => {
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
+    gsap.set(body, {overflow: 'hidden'});
+    gsap.to('#settings-container', {visibility: 'visible', opacity: 1, y: 0, x: 0, duration: 0.1}, '>');
+    gsap.fromTo('.settings-content', {scale: 0}, {scale: 1, ease: 'elastic.out(1, 1)', duration: 0.8});
+});
+
+document.getElementById('close-settings-btn').addEventListener('click', (e) => {
+    gsap.fromTo('.settings-container', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
+    document.getElementById('settings-container').style.visibility = 'hidden';
+    gsap.set(body, {overflow: 'visible'});
+});
