@@ -16,6 +16,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <title>as.kee</title>
   </head>
 
@@ -38,19 +39,73 @@
           </button>
           <div class="settings-text">
             <h1>Settings</h1>
-            <div id="new-tab" class="settings-options">
-              <h2>New Tab</h2>
-              <p>Open high-res ASCII Image in new tab.</p>
+            <div id="new-tab" class="grid-wrapper settings-options">
+              <div class="col1">
+                <h2>New Tab</h2>
+                <p>Open high-res ASCII Image in new tab.</p>
+              </div>
+              <div class="col2">
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
 
-            <div class="settings-options">
-              <h2>Tips</h2>
-              <p>Always show tips on startup.</p>
+            <div class="grid-wrapper settings-options">
+              <div class="col1">
+                <h2>Tips</h2>
+                <p>Always show tips on startup.</p>
+              </div>
+
+              <div class="col2">
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
 
-            <div class="settings-options">
-              <h2>Shading Scheme</h2>
-              <p>Change the shading scheme.</p>
+            <div class="grid-wrapper settings-options">
+              <div class="col1">
+                <h2>Shading Scheme</h2>
+                <p>Change the shading scheme.</p>
+              </div>
+
+              <div class="col2">
+                <div class="dropdown">
+                  <button
+                    class="shading-dropdwn"
+                    id="shading-dropdwn"
+                    aria-expanded="false"
+                  >
+                    Select an Option
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="m8.71 11.71l2.59 2.59c.39.39 1.02.39 1.41 0l2.59-2.59c.63-.63.18-1.71-.71-1.71H9.41c-.89 0-1.33 1.08-.7 1.71z"
+                      />
+                    </svg>
+                  </button>
+
+                  <div class="shading-content">
+                    <input type="radio" id="shade1" value=".:░▒▓█" />
+                    <label for="shade1">.:░▒▓█</label> <br />
+
+                    <input
+                      type="radio"
+                      id="shade2"
+                      value="       .:-i|=+%O#@"
+                    />
+                    <label for="shade2"> .:-i|=+%O#@</label> <br />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

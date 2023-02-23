@@ -77,3 +77,7 @@ document.getElementById('close-settings-btn').addEventListener('click', (e) => {
     document.getElementById('settings-container').style.visibility = 'hidden';
     gsap.set(body, {overflow: 'visible'});
 });
+
+$("#shading-dropdwn").click( () => {
+    $(this).attr("aria-expanded", "true");
+})
