@@ -2,18 +2,49 @@ const canvas = document.getElementById("preview");
 const fileInput = document.querySelector('input[type="file"');
 const context = canvas.getContext("2d");
 const div = document.querySelector("#error-container");
+const error = document.getElementById("error-container");
+const tips = document.getElementById("tips-container");
+const body = document.body;
 
 const downloadBtn = document.getElementById("save-btn");
 
 const c = document.createElement('canvas');
-const ctx = c.getContext('2d');
+const cx = c.getContext('2d');
 
 var imageWidth;
 var imageHeight;
 
+var density;
 
-//const density = "_.,-=+:;cba!?0123456789$W#@Ñ";
-const density = '       .:-i|=+%O#@'
+var cookieArr = document.cookie.split(";");
+
+function getCookieVal() {
+    for (let i = 0; i < cookieArr.length; i++) {
+        const cookiePair = cookieArr[i].split("=");
+        if (cookiePair[0].trim() === 'shading') {
+            if (cookiePair[1] === '1') {
+                density = " .:░▒▓█";
+            } else if (cookiePair[1] === '2'){
+                density = "       .:-i|=+%O#@";
+            }
+
+        } else if(cookiePair[0].trim() === 'new_tab') {
+            if (cookiePair[1] === '0') {
+                $("#new-tab-switch").prop("checked", false);
+            } else if (cookiePair[1] === '1'){
+                $("#new-tab-switch").prop("checked", true);
+            }
+        } else {
+            if (cookiePair[1] === '0') {
+                $("#tips-switch").prop("checked", false);
+            } else if (cookiePair[1] === '1'){
+                $("#tips-switch").prop("checked", true);
+            }
+        }
+    }
+}
+
+getCookieVal();
 
 const image = new Image();
 
@@ -29,11 +60,6 @@ class Cell {
         context.textAlign = "center";
         context.font = "Courier";
         context.fillText(this.char, this.x, this.y);
-
-        ctx.fillStyle = 'white';
-        ctx.textAlign = "center";
-        ctx.font = "Courier";
-        ctx.fillText(this.char, this.x, this.y);
     }
 }
 
@@ -147,8 +173,8 @@ fileInput.onchange = e => {
 document.getElementById("save-btn").addEventListener('click', function(e) {
     c.width = imageWidth;
     c.height = imageHeight;
-    n = new convertToAscii(ctx, c.width, c.height);
-    n.draw(10);
+    n = new convertToAscii(cx, c.width, c.height);
+    n.draw(3);
 
     let image = c.toDataURL("image/png", 1.0);
     const link = document.createElement('a');
@@ -157,3 +183,64 @@ document.getElementById("save-btn").addEventListener('click', function(e) {
     link.click();
     link.remove();
 });
+
+const saveShadingVal = () => {
+    if ($("#shade1").is(":checked")) {
+        document.cookie = 'shading=1; Secure;';
+    } else if($("#shade2").is(":checked")) {
+        document.cookie = 'shading=2; Secure;';
+    }
+};
+
+const saveNewTab = () => {
+    if($("#new-tab-switch").is(":checked")) {
+        document.cookie = 'new_tab=1; Secure';
+    } else {
+        document.cookie = 'new_tab=0; Secure';
+    }
+};
+
+const saveTipsVal = () => {
+    if($("#tips-switch").is(":checked")) {
+        document.cookie = 'tips=1; Secure';
+    } else {
+        document.cookie = 'tips=0; Secure';
+    }
+}
+
+function checkToggleClick() {
+    var is_on = $(this).prop("checked");
+    saveNewTab();
+    if(is_on === true){
+        $(this).prop("checked", true);
+    } else {
+        $(this).prop("checked", false);
+    }
+}
+
+$("#shading-dropdwn").click(() => {
+    saveShadingVal();
+    var is_on = $(".dropdown").attr("aria-expanded");
+    if(is_on === 'true'){
+        $(".dropdown").attr("aria-expanded", "false");
+    } else {
+        $(".dropdown").attr("aria-expanded", "true");
+    }
+});
+
+ $("#close-settings-btn-mid").click(() => {
+    saveNewTab();
+    saveTipsVal();
+    var is_on = $(".dropdown").attr("aria-expanded");
+
+    if(is_on === 'true'){
+        saveShadingVal();
+        $(".dropdown").attr("aria-expanded", "false");
+    }
+
+    getCookieVal();
+ })
+
+ $("#close-settings-btn").click(() => {
+    location.reload();
+ })

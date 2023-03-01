@@ -6,7 +6,7 @@
 
 :root {
     --switch-height: 24px;
-    --switch-padding: 2px;
+    --switch-padding: .2px;
     --switch-width: calc((var(--switch-height) * 2) - var(--switch-padding));
     --slider-height: calc((var(--switch-height) - var(--switch-padding)));
     --slider-on: calc(var(--slider-height) - var(--switch-padding));
@@ -68,6 +68,73 @@ h1 {
     background-color: #e5e3e3;
     color: #272727;
     border: 0px solid;
+}
+
+.save-settings-dialog {
+    visibility: hidden;
+
+    width: 350px;
+    height: 180px;
+    padding: 25px 10px 10px 010px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow: hidden;
+
+    background-color: #272727;
+    color: #e5e3e3;
+
+    border-radius: 15px;
+    border: 2.5px dashed #e5e3e3;
+    filter: drop-shadow(7px 7px #181717);
+    position: absolute;
+}
+
+.save-settings-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.save-settings-text {
+    padding: 15px 0 15px 10px;
+}
+
+.save-settings-text h1 {
+    font-size: 1.2rem;
+    padding-bottom: 5px;
+}
+
+.save-settings-text p {
+    padding-bottom: 10px;
+}
+
+
+#close-save-settings-btn {
+    cursor: pointer;
+    position: absolute;
+    transform: translate(150px, -63px);
+}
+
+.s-settings-btn {
+    padding: 5px 40px 5px 40px;
+    font-family: 'JetBrains Mono', monospace;;
+    border: 1px solid #e5e3e3;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: #181717;
+    color: #e5e3e3;
+}
+
+.s-settings-btn:hover {
+    background-color: #639ec0;
+    color: #e5e3e3;
 }
 
 .settings-container {
@@ -171,7 +238,7 @@ h1 {
     right: 0;
     bottom: 0;
     background-color: #181717;
-    transition: 0.8s;
+    transition: 0.2s;
     border-radius: var(--slider-height);
 }
 
@@ -183,19 +250,19 @@ h1 {
     left: calc(var(--switch-padding) / 2);
     bottom: calc(var(--switch-padding) / 2);
     background-color: white;
-    transition: 0.9s;
+    transition: 0.3s;
     border-radius: 50%;
 }
 
-input:checked + .slider {
+.toggle:checked + .slider {
     background-color: #639ec0;
 }
 
-input:focus + .slider {
+.toggle:focus + .slider {
     box-shadow: 0 0 1px #639ec0;
 }
 
-input:checked + .slider::before {
+.toggle:checked + .slider::before {
     transform: translateX(var(--slider-on));
 }
 
@@ -234,12 +301,12 @@ input:checked + .slider::before {
     z-index: 1;
 }
 
-.dropdown:hover .shading-content {
+.dropdown[aria-expanded="true"] .shading-content {
     display: block;
     border: #639ec0 1px solid;
 }
 
-.dropdown:hover .shading-dropdwn{
+.dropdown[aria-expanded="true"] .shading-dropdwn{
     border: #639ec0 4px solid;
 }
 

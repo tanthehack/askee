@@ -24,7 +24,7 @@
     <div>
       <div class="settings-container" id="settings-container">
         <div class="settings-content">
-          <button class="close-settings menu-btns" id="close-settings-btn">
+          <button class="close-settings menu-btns" id="close-settings-btn-mid">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1.5em"
@@ -46,7 +46,12 @@
               </div>
               <div class="col2">
                 <label class="switch">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    id="new-tab-switch"
+                    class="toggle"
+                    onclick="checkToggleClick(this)"
+                  />
                   <span class="slider"></span>
                 </label>
               </div>
@@ -60,7 +65,13 @@
 
               <div class="col2">
                 <label class="switch">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    id="tips-switch"
+                    class="toggle"
+                    aria-expanded="false"
+                    onclick="checkToggleClick()"
+                  />
                   <span class="slider"></span>
                 </label>
               </div>
@@ -73,12 +84,8 @@
               </div>
 
               <div class="col2">
-                <div class="dropdown">
-                  <button
-                    class="shading-dropdwn"
-                    id="shading-dropdwn"
-                    aria-expanded="false"
-                  >
+                <div class="dropdown" aria-expanded="false">
+                  <button class="shading-dropdwn" id="shading-dropdwn">
                     Select an Option
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -94,12 +101,18 @@
                   </button>
 
                   <div class="shading-content">
-                    <input type="radio" id="shade1" value=".:░▒▓█" />
+                    <input
+                      type="radio"
+                      id="shade1"
+                      name="shading_value"
+                      value=".:░▒▓█"
+                    />
                     <label for="shade1">.:░▒▓█</label> <br />
 
                     <input
                       type="radio"
                       id="shade2"
+                      name="shading_value"
                       value="       .:-i|=+%O#@"
                     />
                     <label for="shade2"> .:-i|=+%O#@</label> <br />
@@ -108,6 +121,31 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="save-settings-dialog" id="save-settings">
+          <div class="save-settings-content">
+            <button class="menu-btns" id="close-save-settings-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.5em"
+                preserveAspectRatio="xMidYMid meet"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="currentColor"
+                  d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-11.414L9.172 7.757L7.757 9.172L10.586 12l-2.829 2.828l1.415 1.415L12 13.414l2.828 2.829l1.415-1.415L13.414 12l2.829-2.828l-1.415-1.415L12 10.586z"
+                />
+              </svg>
+            </button>
+            <div class="save-settings-text">
+              <h1>You're about to close this window.</h1>
+              <p>The website will reload to save your settings.</p>
+            </div>
+            <div class="save-settings-btns">
+              <button class="cancel-btn s-settings-btn" id="cancel-save-settings-btn">Cancel</button>
+              <button class="save-btn s-settings-btn" id="close-settings-btn">Confirm</button>
+            </div>
         </div>
       </div>
     </div>
@@ -468,5 +506,5 @@
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
   <script src="animation.js"></script>
-  <script src="newScript.js"></script>
+  <script src="script.js"></script>
 </html>

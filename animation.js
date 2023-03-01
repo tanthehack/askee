@@ -73,11 +73,25 @@ document.getElementById('settings-btn').addEventListener('click', (e) => {
 });
 
 document.getElementById('close-settings-btn').addEventListener('click', (e) => {
+    gsap.fromTo('.save-settings-dialog', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
     gsap.fromTo('.settings-container', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
     document.getElementById('settings-container').style.visibility = 'hidden';
+    document.getElementById('save-settings').style.visibility = 'hidden';
     gsap.set(body, {overflow: 'visible'});
 });
 
-$("#shading-dropdwn").click( () => {
-    $(this).attr("aria-expanded", "true");
-})
+document.getElementById('close-settings-btn-mid').addEventListener('click', (e) => {
+    document.getElementById('save-settings').style.visibility = 'visible';
+    gsap.fromTo('.save-settings-dialog', {autoAlpha: 0}, {autoAlpha: 1, ease: 'sine.out', y:0, duration: 0.3});
+});
+
+document.getElementById('close-save-settings-btn').addEventListener('click', (e) => {
+    gsap.fromTo('.save-settings-dialog', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
+});
+
+document.getElementById('cancel-save-settings-btn').addEventListener('click', (e) => {
+    gsap.fromTo('.save-settings-dialog', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
+});
+
+
+
