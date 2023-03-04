@@ -23,7 +23,7 @@ tipsStartupChk.checked = true;
 tabSwitchTgl.checked = false;
 open_new_tab = false;
 
-// check cookie values and repaint UI accordingly
+// check cookie values, repaint UI and set globals accordingly
 function getCookieVal() {
     let cookieArr = document.cookie.split(";");
 
@@ -133,13 +133,13 @@ const saveNewTab = () => {
 
 const saveTipsVal = () => {
     if (tipsSwitchTgl.checked) {
-        document.cookie = 'tips=1; Secure';
+        document.cookie = 'tips=1; Secure; SameSite=None';
     } else {
-        document.cookie = 'tips=0; Secure';
+        document.cookie = 'tips=0; Secure; SameSite=None';
     }
 };
 
-// check if cookies disagree with settings ui
+// check if cookies disagree with settings inputs
 function is_cookie_changed() {
     let cookieArr = document.cookie.split(";");
 
@@ -160,17 +160,22 @@ function is_cookie_changed() {
                 }
                 break;
 
-            case 'new_tab':
-                if (val != tabSwitchTgl.checked) {
-                    return true;
-                }
-                break;
+            // ↓ only triggers reload if shading is changed
+            // for others, simply set cookie and repaint UI
+            //
+            // uncomment to reload on ANY change
 
-            case 'tips':
-                if (val != tipsSwitchTgl.checked) {
-                    return true;
-                }
-                break;
+            // case 'new_tab':
+            //     if (val != tabSwitchTgl.checked) {
+            //         return true;
+            //     }
+            //     break;
+
+            // case 'tips':
+            //     if (val != tipsSwitchTgl.checked) {
+            //         return true;
+            //     }
+            //     break;
 
             default:
                 break;
@@ -189,10 +194,14 @@ $("#close-settings-btn").click(() => {
 
     if (is_cookie_changed()) {
         // open dialog
-        open_save_settings()
+        open_save_settings();
     } else {
         // close directly
-        close_settings()
+        saveNewTab();
+        saveTipsVal();
+
+        getCookieVal();
+        close_settings();
     }
 })
 
@@ -201,7 +210,6 @@ $("#confirm-save-settings-btn").click(() => {
     saveTipsVal();
     saveShadingVal();
 
-    getCookieVal();
     location.reload();
 })
 
@@ -209,15 +217,15 @@ $("#confirm-save-settings-btn").click(() => {
 
 /************************** IMAGE **************************/
 
-const canvas = document.getElementById("preview");
+const preview = document.getElementById("preview");
 const fileInput = document.querySelector('input[type="file"]');
-const context = canvas.getContext("2d");
+const preview_ctx = preview.getContext("2d");
 const div = document.querySelector("#error-container");
 const error = document.getElementById("error-container");
 const tips = document.getElementById("tips-container");
 
-const c = document.createElement('canvas');
-const cx = c.getContext('2d');
+const actual = document.createElement('canvas');
+const actual_ctx = actual.getContext('2d');
 
 var imageWidth;
 var imageHeight;
@@ -231,11 +239,18 @@ class Cell {
         this.char = char;
     }
 
-    draw() {
-        context.fillStyle = 'white';
-        context.textAlign = "center";
-        context.font = "Courier";
-        context.fillText(this.char, this.x, this.y);
+    draw_preview() {
+        preview_ctx.fillStyle = 'white';
+        preview_ctx.textAlign = "center";
+        preview_ctx.font = "Courier";
+        preview_ctx.fillText(this.char, this.x, this.y);
+    }
+
+    draw_actual() {
+        actual_ctx.fillStyle = 'white';
+        actual_ctx.textAlign = "center";
+        actual_ctx.font = "Courier";
+        actual_ctx.fillText(this.char, this.x, this.y);
     }
 }
 
@@ -259,7 +274,6 @@ class convertToAscii {
         return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     }
 
-
     scanImage(cellSize) {
         for (let y = 0; y < this.pixels.height; y += cellSize) {
             for (let x = 0; x < this.pixels.width; x += cellSize) {
@@ -274,7 +288,7 @@ class convertToAscii {
                     const total = r + g + b;
                     const avg = total / 3;
                     const len = density.length;
-                    const charIndex = Math.floor(this.map(avg, 0, 255, 0, len));
+                    const charIndex = Math.floor(this.map(avg, 0, 255, 0, len)); // len or len - 1?
                     const c = density.charAt(charIndex);
 
                     this.cellArray.push(new Cell(x, y, c));
@@ -283,42 +297,49 @@ class convertToAscii {
         }
     }
 
-    draw(c) {
-        this.scanImage(c);
+    draw_preview(x) {
+        this.scanImage(x);
         this.ctx.clearRect(0, 0, this.width, this.height);
         for (let i = 0; i < this.cellArray.length; i++) {
-            this.cellArray[i].draw(this.ctx);
+            this.cellArray[i].draw_preview(this.ctx);
+        }
+    }
+
+    draw_actual(x) {
+        this.scanImage(x);
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        for (let i = 0; i < this.cellArray.length; i++) {
+            this.cellArray[i].draw_actual(this.ctx);
         }
     }
 }
 
-
 const MAXIMUM_WIDTH = 500;
 const MAXIMUM_HEIGHT = 500;
 
-
 const clampDimensions = (width, height) => {
-    if (width > height) {
+    if (width > height) { // landscape
         if (width > MAXIMUM_WIDTH) {
             aspect = width / height;
             height = MAXIMUM_HEIGHT / aspect;
             width = MAXIMUM_WIDTH;
         }
     }
-    else if (width < height) {
+    else if (width < height) { // portrait
         if (height > MAXIMUM_HEIGHT) {
             aspect = width / height;
             width = MAXIMUM_WIDTH * aspect;
             height = MAXIMUM_HEIGHT;
         }
     }
-    else {
-        if (height < 500) {
-            return [MAXIMUM_WIDTH, MAXIMUM_HEIGHT];
+    else { // square
+        if (height > 500) {
+            width = MAXIMUM_WIDTH;
+            height = MAXIMUM_HEIGHT;
         }
     }
-    return [width, height]
 
+    return [width, height]
 };
 
 
@@ -327,17 +348,16 @@ fileInput.onchange = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
-
     reader.onload = event => {
         image.onload = () => {
             imageWidth = image.width;
             imageHeight = image.height;
             const [width, height] = clampDimensions(image.width, image.height);
 
-            canvas.width = width;
-            canvas.height = height;
-            effect = new convertToAscii(context, width, height);
-            effect.draw(10);
+            preview.width = width;
+            preview.height = height;
+            effect = new convertToAscii(preview_ctx, width, height);
+            effect.draw_preview(3);
             div.style.display = 'none';
         }
         image.src = event.target.result;
@@ -347,15 +367,21 @@ fileInput.onchange = e => {
 }
 
 document.getElementById("save-btn").addEventListener('click', function (e) {
-    c.width = imageWidth;
-    c.height = imageHeight;
-    n = new convertToAscii(cx, c.width, c.height);
-    n.draw(3);
+    actual.width = imageWidth;
+    actual.height = imageHeight;
+    n = new convertToAscii(actual_ctx, actual.width, actual.height);
+    n.draw_actual(3);
 
-    let image = c.toDataURL("image/png", 1.0);
+    let image = actual.toDataURL("image/png", 1.0);
     const link = document.createElement('a');
     link.href = image;
-    link.download = "my-ascii-image.png";
+
+    if (open_new_tab) {
+        link.target = "_blank";
+    } else {
+        link.download = "my-ascii-image.png";
+    }
+
     link.click();
     link.remove();
 });
