@@ -24,7 +24,7 @@
     <div>
       <div class="settings-container" id="settings-container">
         <div class="settings-content">
-          <button class="close-settings menu-btns" id="close-settings-btn-mid">
+          <button class="close-settings menu-btns" id="close-settings-btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1.5em"
@@ -50,7 +50,6 @@
                     type="checkbox"
                     id="new-tab-switch"
                     class="toggle"
-                    onclick="checkToggleClick(this)"
                   />
                   <span class="slider"></span>
                 </label>
@@ -69,8 +68,6 @@
                     type="checkbox"
                     id="tips-switch"
                     class="toggle"
-                    aria-expanded="false"
-                    onclick="checkToggleClick()"
                   />
                   <span class="slider"></span>
                 </label>
@@ -113,7 +110,7 @@
                       type="radio"
                       id="shade2"
                       name="shading_value"
-                      value="       .:-i|=+%O#@"
+                      value=" .:-i|=+%O#@"
                     />
                     <label for="shade2"> .:-i|=+%O#@</label> <br />
                   </div>
@@ -144,7 +141,7 @@
             </div>
             <div class="save-settings-btns">
               <button class="cancel-btn s-settings-btn" id="cancel-save-settings-btn">Cancel</button>
-              <button class="save-btn s-settings-btn" id="close-settings-btn">Confirm</button>
+              <button class="save-btn s-settings-btn" id="confirm-save-settings-btn">Confirm</button>
             </div>
         </div>
       </div>

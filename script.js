@@ -1,12 +1,220 @@
+/************************** COOKIES **************************/
+
+const body = document.body;
+const downloadBtn = document.getElementById("save-btn");
+const tabSwitchTgl = document.getElementById("new-tab-switch");
+const tipsSwitchTgl = document.getElementById("tips-switch");
+const tipsStartupChk = document.getElementsByClassName("tips-startup-checkbox")[0];
+const shade1Opt = document.getElementById("shade1");
+const shade2Opt = document.getElementById("shade2");
+
+let density;
+let open_tips_startup;
+let open_new_tab;
+
+// default values if no cookies
+density = shade1Opt.value;
+shade1Opt.checked = true;
+
+open_tips_startup = true;
+tipsSwitchTgl.checked = true;
+tipsStartupChk.checked = true;
+
+tabSwitchTgl.checked = false;
+open_new_tab = false;
+
+// check cookie values and repaint UI accordingly
+function getCookieVal() {
+    let cookieArr = document.cookie.split(";");
+
+    for (let i = 0; i < cookieArr.length; i++) {
+        const cookiePair = cookieArr[i].split("=");
+
+        let key = cookiePair[0].trim();
+        let val = cookiePair[1];
+
+        switch (key) {
+            case 'shading':
+                if (val === '1') {
+                    density = shade1Opt.value;
+                    shade1Opt.checked = true;
+                } else if (val === '2') {
+                    density = shade2Opt.value;
+                    shade2Opt.checked = true;
+                }
+                break;
+
+            case 'new_tab':
+                if (val === '0') {
+                    open_new_tab = false;
+                    tabSwitchTgl.checked = false;
+                } else if (val === '1') {
+                    open_new_tab = true;
+                    tabSwitchTgl.checked = true;
+                }
+                break;
+
+            case 'tips':
+                if (val === '0') {
+                    open_tips_startup = false;
+                    tipsStartupChk.checked = false;
+                    tipsSwitchTgl.checked = false;
+                } else if (val === '1') {
+                    open_tips_startup = true;
+                    tipsStartupChk.checked = true;
+                    tipsSwitchTgl.checked = true;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+getCookieVal(); // repaint on document load
+if (open_tips_startup) {
+    open_tips()
+}
+
+// ↓ modify new tab setting from tips dialog
+
+for(let i = 0; i < tipsClose.length; i++){ // close buttons
+    tipsClose[i].addEventListener('click', (e) => {
+        if (tipsStartupChk.checked) {
+            document.cookie = 'tips=1; Secure; SameSite=None';
+        } else {
+            document.cookie = 'tips=0; Secure; SameSite=None';
+        }
+
+        getCookieVal();
+    });
+}
+
+tipsNext[0].addEventListener('click', (e) => { // 1st next button
+    if (tipsStartupChk.checked) {
+        document.cookie = 'tips=1; Secure; SameSite=None';
+    } else {
+        document.cookie = 'tips=0; Secure; SameSite=None';
+    }
+
+    getCookieVal();
+});
+
+// TODO: move to animations.js
+// reveal/close the shading dropdown on button click
+$("#shading-dropdwn").click(() => { 
+    var is_on = $(".dropdown").attr("aria-expanded");
+    if (is_on === 'true') {
+        $(".dropdown").attr("aria-expanded", "false");
+    } else {
+        $(".dropdown").attr("aria-expanded", "true");
+    }
+});
+
+// ↓ modify settings from settings dialog
+
+// save to cookies
+const saveShadingVal = () => {
+    if (shade1Opt.checked) {
+        document.cookie = 'shading=1; Secure; SameSite=None';
+    } else if (shade2Opt.checked) {
+        document.cookie = 'shading=2; Secure; SameSite=None';
+    }
+};
+
+const saveNewTab = () => {
+    if (tabSwitchTgl.checked) {
+        document.cookie = 'new_tab=1; Secure; SameSite=None';
+    } else {
+        document.cookie = 'new_tab=0; Secure; SameSite=None';
+    }
+};
+
+const saveTipsVal = () => {
+    if (tipsSwitchTgl.checked) {
+        document.cookie = 'tips=1; Secure';
+    } else {
+        document.cookie = 'tips=0; Secure';
+    }
+};
+
+// check if cookies disagree with settings ui
+function is_cookie_changed() {
+    let cookieArr = document.cookie.split(";");
+
+    if (cookieArr.length !== 3) { // because new cookies
+        return true;
+    }
+
+    for (let i = 0; i < cookieArr.length; i++) {
+        const cookiePair = cookieArr[i].split("=");
+
+        let key = cookiePair[0].trim();
+        let val = cookiePair[1];
+
+        switch (key) {
+            case 'shading':
+                if ((shade1Opt.checked && val == 2) || (shade2Opt.checked && val == 1)) {
+                    return true;
+                }
+                break;
+
+            case 'new_tab':
+                if (val != tabSwitchTgl.checked) {
+                    return true;
+                }
+                break;
+
+            case 'tips':
+                if (val != tipsSwitchTgl.checked) {
+                    return true;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    return false;
+}
+
+// check if cookies have changed and reveal dialog if necessary
+$("#close-settings-btn").click(() => {
+    var is_dropdown_on = $(".dropdown").attr("aria-expanded");
+    if (is_dropdown_on === 'true') {
+        $(".dropdown").attr("aria-expanded", "false");
+    }
+
+    if (is_cookie_changed()) {
+        // open dialog
+        open_save_settings()
+    } else {
+        // close directly
+        close_settings()
+    }
+})
+
+$("#confirm-save-settings-btn").click(() => {
+    saveNewTab();
+    saveTipsVal();
+    saveShadingVal();
+
+    getCookieVal();
+    location.reload();
+})
+
+/*************************************************************/
+
+/************************** IMAGE **************************/
+
 const canvas = document.getElementById("preview");
-const fileInput = document.querySelector('input[type="file"');
+const fileInput = document.querySelector('input[type="file"]');
 const context = canvas.getContext("2d");
 const div = document.querySelector("#error-container");
 const error = document.getElementById("error-container");
 const tips = document.getElementById("tips-container");
-const body = document.body;
-
-const downloadBtn = document.getElementById("save-btn");
 
 const c = document.createElement('canvas');
 const cx = c.getContext('2d');
@@ -14,48 +222,16 @@ const cx = c.getContext('2d');
 var imageWidth;
 var imageHeight;
 
-var density;
-
-var cookieArr = document.cookie.split(";");
-
-function getCookieVal() {
-    for (let i = 0; i < cookieArr.length; i++) {
-        const cookiePair = cookieArr[i].split("=");
-        if (cookiePair[0].trim() === 'shading') {
-            if (cookiePair[1] === '1') {
-                density = " .:░▒▓█";
-            } else if (cookiePair[1] === '2'){
-                density = "       .:-i|=+%O#@";
-            }
-
-        } else if(cookiePair[0].trim() === 'new_tab') {
-            if (cookiePair[1] === '0') {
-                $("#new-tab-switch").prop("checked", false);
-            } else if (cookiePair[1] === '1'){
-                $("#new-tab-switch").prop("checked", true);
-            }
-        } else {
-            if (cookiePair[1] === '0') {
-                $("#tips-switch").prop("checked", false);
-            } else if (cookiePair[1] === '1'){
-                $("#tips-switch").prop("checked", true);
-            }
-        }
-    }
-}
-
-getCookieVal();
-
 const image = new Image();
 
 class Cell {
-    constructor(x, y, char){
+    constructor(x, y, char) {
         this.x = x;
         this.y = y;
         this.char = char;
     }
 
-    draw(){
+    draw() {
         context.fillStyle = 'white';
         context.textAlign = "center";
         context.font = "Courier";
@@ -70,7 +246,7 @@ class convertToAscii {
     pixels = [];
     cellArray = [];
 
-    constructor(ctx, width, height){
+    constructor(ctx, width, height) {
         this.ctx = ctx;
         this.width = width;
         this.height = height;
@@ -84,19 +260,19 @@ class convertToAscii {
     }
 
 
-    scanImage(cellSize){
-        for (let y = 0; y < this.pixels.height; y+=cellSize){
-            for (let x = 0; x < this.pixels.width; x+=cellSize){
+    scanImage(cellSize) {
+        for (let y = 0; y < this.pixels.height; y += cellSize) {
+            for (let x = 0; x < this.pixels.width; x += cellSize) {
                 const posX = x * 4;
                 const posY = y * 4;
                 const pos = (posY * this.pixels.width) + posX;
-    
-                if(this.pixels.data[pos + 3] > 128){
+
+                if (this.pixels.data[pos + 3] > 128) {
                     const r = this.pixels.data[pos];
                     const g = this.pixels.data[pos + 1];
                     const b = this.pixels.data[pos + 2];
                     const total = r + g + b;
-                    const avg = total/3;
+                    const avg = total / 3;
                     const len = density.length;
                     const charIndex = Math.floor(this.map(avg, 0, 255, 0, len));
                     const c = density.charAt(charIndex);
@@ -107,10 +283,10 @@ class convertToAscii {
         }
     }
 
-    draw(c){
+    draw(c) {
         this.scanImage(c);
         this.ctx.clearRect(0, 0, this.width, this.height);
-        for (let i = 0; i < this.cellArray.length; i++){
+        for (let i = 0; i < this.cellArray.length; i++) {
             this.cellArray[i].draw(this.ctx);
         }
     }
@@ -129,7 +305,7 @@ const clampDimensions = (width, height) => {
             width = MAXIMUM_WIDTH;
         }
     }
-    else if(width < height) {
+    else if (width < height) {
         if (height > MAXIMUM_HEIGHT) {
             aspect = width / height;
             width = MAXIMUM_WIDTH * aspect;
@@ -137,8 +313,8 @@ const clampDimensions = (width, height) => {
         }
     }
     else {
-        if(height < 500){
-            return[MAXIMUM_WIDTH, MAXIMUM_HEIGHT];
+        if (height < 500) {
+            return [MAXIMUM_WIDTH, MAXIMUM_HEIGHT];
         }
     }
     return [width, height]
@@ -150,7 +326,7 @@ let effect;
 fileInput.onchange = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    
+
 
     reader.onload = event => {
         image.onload = () => {
@@ -160,7 +336,7 @@ fileInput.onchange = e => {
 
             canvas.width = width;
             canvas.height = height;
-            effect =  new convertToAscii(context, width, height);
+            effect = new convertToAscii(context, width, height);
             effect.draw(10);
             div.style.display = 'none';
         }
@@ -170,7 +346,7 @@ fileInput.onchange = e => {
     reader.readAsDataURL(file);
 }
 
-document.getElementById("save-btn").addEventListener('click', function(e) {
+document.getElementById("save-btn").addEventListener('click', function (e) {
     c.width = imageWidth;
     c.height = imageHeight;
     n = new convertToAscii(cx, c.width, c.height);
@@ -184,63 +360,4 @@ document.getElementById("save-btn").addEventListener('click', function(e) {
     link.remove();
 });
 
-const saveShadingVal = () => {
-    if ($("#shade1").is(":checked")) {
-        document.cookie = 'shading=1; Secure;';
-    } else if($("#shade2").is(":checked")) {
-        document.cookie = 'shading=2; Secure;';
-    }
-};
-
-const saveNewTab = () => {
-    if($("#new-tab-switch").is(":checked")) {
-        document.cookie = 'new_tab=1; Secure';
-    } else {
-        document.cookie = 'new_tab=0; Secure';
-    }
-};
-
-const saveTipsVal = () => {
-    if($("#tips-switch").is(":checked")) {
-        document.cookie = 'tips=1; Secure';
-    } else {
-        document.cookie = 'tips=0; Secure';
-    }
-}
-
-function checkToggleClick() {
-    var is_on = $(this).prop("checked");
-    saveNewTab();
-    if(is_on === true){
-        $(this).prop("checked", true);
-    } else {
-        $(this).prop("checked", false);
-    }
-}
-
-$("#shading-dropdwn").click(() => {
-    saveShadingVal();
-    var is_on = $(".dropdown").attr("aria-expanded");
-    if(is_on === 'true'){
-        $(".dropdown").attr("aria-expanded", "false");
-    } else {
-        $(".dropdown").attr("aria-expanded", "true");
-    }
-});
-
- $("#close-settings-btn-mid").click(() => {
-    saveNewTab();
-    saveTipsVal();
-    var is_on = $(".dropdown").attr("aria-expanded");
-
-    if(is_on === 'true'){
-        saveShadingVal();
-        $(".dropdown").attr("aria-expanded", "false");
-    }
-
-    getCookieVal();
- })
-
- $("#close-settings-btn").click(() => {
-    location.reload();
- })
+/*************************************************************/

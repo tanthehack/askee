@@ -5,9 +5,7 @@ const tipsContainer  = document.getElementsByClassName("visible-state");
 const tipsNext = document.getElementsByClassName("next-btn");
 const tipsBack = document.getElementsByClassName("back-tips");
 
-
-
-document.getElementById('tips-btn').addEventListener('click', (e) => {
+function open_tips() {
     window.scrollTo({
         top: 0,
         left: 0,
@@ -17,6 +15,10 @@ document.getElementById('tips-btn').addEventListener('click', (e) => {
     time_line.set('.tips', {visibility: 'visible'}, '>');
     time_line.to('#tips-container', {visibility: 'visible', opacity: 1, y: 0, x: 0, duration: 0.1}, '>');
     time_line.fromTo('.tips-content', {scale: 0}, {scale: 1, ease: 'elastic.out(1, 1)', duration: 0.8});
+}
+
+document.getElementById('tips-btn').addEventListener('click', (e) => {
+    open_tips();
 });
 
 for(let i = 0; i < tipsClose.length; i++){
@@ -72,18 +74,16 @@ document.getElementById('settings-btn').addEventListener('click', (e) => {
     gsap.fromTo('.settings-content', {scale: 0}, {scale: 1, ease: 'elastic.out(1, 1)', duration: 0.8});
 });
 
-document.getElementById('close-settings-btn').addEventListener('click', (e) => {
-    gsap.fromTo('.save-settings-dialog', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
-    gsap.fromTo('.settings-container', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
-    document.getElementById('settings-container').style.visibility = 'hidden';
-    document.getElementById('save-settings').style.visibility = 'hidden';
-    gsap.set(body, {overflow: 'visible'});
-});
-
-document.getElementById('close-settings-btn-mid').addEventListener('click', (e) => {
+function open_save_settings() {  
     document.getElementById('save-settings').style.visibility = 'visible';
     gsap.fromTo('.save-settings-dialog', {autoAlpha: 0}, {autoAlpha: 1, ease: 'sine.out', y:0, duration: 0.3});
-});
+}
+
+function close_settings() {
+    document.getElementById('settings-container').style.visibility = 'hidden';
+    gsap.fromTo('.settings-container', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
+    gsap.set(body, {overflow: 'visible'});
+}
 
 document.getElementById('close-save-settings-btn').addEventListener('click', (e) => {
     gsap.fromTo('.save-settings-dialog', {autoAlpha: 1}, {autoAlpha: 0, ease: 'sine.out', y:-100, duration: 0.3});
