@@ -79,7 +79,7 @@ if (open_tips_startup) {
 
 // ↓ modify new tab setting from tips dialog
 
-for(let i = 0; i < tipsClose.length; i++){ // close buttons
+for (let i = 0; i < tipsClose.length; i++) { // close buttons
     tipsClose[i].addEventListener('click', (e) => {
         if (tipsStartupChk.checked) {
             document.cookie = 'tips=1; Secure; SameSite=None';
@@ -103,7 +103,7 @@ tipsNext[0].addEventListener('click', (e) => { // 1st next button
 
 // TODO: move to animations.js
 // reveal/close the shading dropdown on button click
-$("#shading-dropdwn").click(() => { 
+$("#shading-dropdwn").click(() => {
     var is_on = $(".dropdown").attr("aria-expanded");
     if (is_on === 'true') {
         $(".dropdown").attr("aria-expanded", "false");
@@ -217,21 +217,19 @@ $("#confirm-save-settings-btn").click(() => {
 
 /************************** IMAGE **************************/
 
-const preview = document.getElementById("preview");
 const fileInput = document.querySelector('input[type="file"]');
-const preview_ctx = preview.getContext("2d");
-const div = document.querySelector("#error-container");
-const error = document.getElementById("error-container");
-const tips = document.getElementById("tips-container");
 
-const actual = document.createElement('canvas');
-const actual_ctx = actual.getContext('2d');
-
-var imageWidth;
-var imageHeight;
+const canvas = document.createElement('canvas');
+const canvas_ctx = canvas.getContext('2d');
 
 const image = new Image();
+let image_data;
+let preview_image;
 
+const MAXIMUM_WIDTH = 500;
+const MAXIMUM_HEIGHT = 500;
+
+// basic unit of life
 class Cell {
     constructor(x, y, char) {
         this.x = x;
@@ -239,21 +237,15 @@ class Cell {
         this.char = char;
     }
 
-    draw_preview() {
-        preview_ctx.fillStyle = 'white';
-        preview_ctx.textAlign = "center";
-        preview_ctx.font = "Courier";
-        preview_ctx.fillText(this.char, this.x, this.y);
-    }
-
-    draw_actual() {
-        actual_ctx.fillStyle = 'white';
-        actual_ctx.textAlign = "center";
-        actual_ctx.font = "Courier";
-        actual_ctx.fillText(this.char, this.x, this.y);
+    draw() {
+        canvas_ctx.fillStyle = 'white';
+        canvas_ctx.textAlign = "center";
+        canvas_ctx.font = "Courier";
+        canvas_ctx.fillText(this.char, this.x, this.y);
     }
 }
 
+// takes a pixel buffer and writes the ASCII version to a canvas
 class convertToAscii {
     ctx;
     width;
@@ -270,10 +262,12 @@ class convertToAscii {
         this.pixels = this.ctx.getImageData(0, 0, this.width, this.height);
     }
 
+    // magic
     map(value, low1, high1, low2, high2) {
         return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     }
 
+    // iterate through pixels and convert to cells
     scanImage(cellSize) {
         for (let y = 0; y < this.pixels.height; y += cellSize) {
             for (let x = 0; x < this.pixels.width; x += cellSize) {
@@ -297,26 +291,17 @@ class convertToAscii {
         }
     }
 
-    draw_preview(x) {
+    // plot the cells on the canvas
+    draw(x) {
         this.scanImage(x);
         this.ctx.clearRect(0, 0, this.width, this.height);
         for (let i = 0; i < this.cellArray.length; i++) {
-            this.cellArray[i].draw_preview(this.ctx);
-        }
-    }
-
-    draw_actual(x) {
-        this.scanImage(x);
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        for (let i = 0; i < this.cellArray.length; i++) {
-            this.cellArray[i].draw_actual(this.ctx);
+            this.cellArray[i].draw(this.ctx);
         }
     }
 }
 
-const MAXIMUM_WIDTH = 500;
-const MAXIMUM_HEIGHT = 500;
-
+// scales image to fit in a window of specified size
 const clampDimensions = (width, height) => {
     if (width > height) { // landscape
         if (width > MAXIMUM_WIDTH) {
@@ -342,39 +327,50 @@ const clampDimensions = (width, height) => {
     return [width, height]
 };
 
-
-let effect;
+// weird down-to-up FileReader thing
 fileInput.onchange = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
     reader.onload = event => {
         image.onload = () => {
-            imageWidth = image.width;
-            imageHeight = image.height;
+            // convert to canvas
+            canvas.width = image.width;
+            canvas.height = image.height;
+
+            n = new convertToAscii(canvas_ctx, canvas.width, canvas.height);
+            n.draw(3);
+
+            // convert to base64 data
+            image_data = canvas.toDataURL("image/png", 1.0);
+
+            // create downscaled preview
             const [width, height] = clampDimensions(image.width, image.height);
 
-            preview.width = width;
-            preview.height = height;
-            effect = new convertToAscii(preview_ctx, width, height);
-            effect.draw_preview(3);
-            div.style.display = 'none';
+            preview_image = document.createElement('img');
+            preview_image.setAttribute('width', width);
+            preview_image.setAttribute('height', height);
+            preview_image.src = image_data;
+
+            // paint preview image on screen
+            document.getElementsByClassName("preview-container")[0].replaceChildren(preview_image);
         }
+
         image.src = event.target.result;
     }
 
     reader.readAsDataURL(file);
 }
 
+// on save button click
 document.getElementById("save-btn").addEventListener('click', function (e) {
-    actual.width = imageWidth;
-    actual.height = imageHeight;
-    n = new convertToAscii(actual_ctx, actual.width, actual.height);
-    n.draw_actual(3);
+    if (image_data == undefined) { // if no image selected
+        document.getElementById("error").textContent = "No Image Selected";
+        return;
+    }
 
-    let image = actual.toDataURL("image/png", 1.0);
     const link = document.createElement('a');
-    link.href = image;
+    link.href = image_data;
 
     if (open_new_tab) {
         link.target = "_blank";
