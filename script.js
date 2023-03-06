@@ -339,7 +339,7 @@ fileInput.onchange = e => {
             canvas.height = image.height;
 
             n = new convertToAscii(canvas_ctx, canvas.width, canvas.height);
-            n.draw(3);
+            n.draw(6);
 
             // convert to base64 data
             image_data = canvas.toDataURL("image/png", 1.0);
