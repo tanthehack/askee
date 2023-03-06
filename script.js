@@ -24,20 +24,20 @@ function getCookieVal() {
         if (cookiePair[0].trim() === 'shading') {
             if (cookiePair[1] === '1') {
                 density = " .:░▒▓█";
-            } else if (cookiePair[1] === '2'){
+            } else if (cookiePair[1] === '2') {
                 density = "       .:-i|=+%O#@";
             }
 
-        } else if(cookiePair[0].trim() === 'new_tab') {
+        } else if (cookiePair[0].trim() === 'new_tab') {
             if (cookiePair[1] === '0') {
                 $("#new-tab-switch").prop("checked", false);
-            } else if (cookiePair[1] === '1'){
+            } else if (cookiePair[1] === '1') {
                 $("#new-tab-switch").prop("checked", true);
             }
         } else {
             if (cookiePair[1] === '0') {
                 $("#tips-switch").prop("checked", false);
-            } else if (cookiePair[1] === '1'){
+            } else if (cookiePair[1] === '1') {
                 $("#tips-switch").prop("checked", true);
             }
         }
@@ -49,13 +49,13 @@ getCookieVal();
 const image = new Image();
 
 class Cell {
-    constructor(x, y, char){
+    constructor(x, y, char) {
         this.x = x;
         this.y = y;
         this.char = char;
     }
 
-    draw(){
+    draw() {
         context.fillStyle = 'white';
         context.textAlign = "center";
         context.font = "Courier";
@@ -70,7 +70,7 @@ class convertToAscii {
     pixels = [];
     cellArray = [];
 
-    constructor(ctx, width, height){
+    constructor(ctx, width, height) {
         this.ctx = ctx;
         this.width = width;
         this.height = height;
@@ -84,19 +84,19 @@ class convertToAscii {
     }
 
 
-    scanImage(cellSize){
-        for (let y = 0; y < this.pixels.height; y+=cellSize){
-            for (let x = 0; x < this.pixels.width; x+=cellSize){
+    scanImage(cellSize) {
+        for (let y = 0; y < this.pixels.height; y += cellSize) {
+            for (let x = 0; x < this.pixels.width; x += cellSize) {
                 const posX = x * 4;
                 const posY = y * 4;
                 const pos = (posY * this.pixels.width) + posX;
-    
-                if(this.pixels.data[pos + 3] > 128){
+
+                if (this.pixels.data[pos + 3] > 128) {
                     const r = this.pixels.data[pos];
                     const g = this.pixels.data[pos + 1];
                     const b = this.pixels.data[pos + 2];
                     const total = r + g + b;
-                    const avg = total/3;
+                    const avg = total / 3;
                     const len = density.length;
                     const charIndex = Math.floor(this.map(avg, 0, 255, 0, len));
                     const c = density.charAt(charIndex);
@@ -107,10 +107,10 @@ class convertToAscii {
         }
     }
 
-    draw(c){
+    draw(c) {
         this.scanImage(c);
         this.ctx.clearRect(0, 0, this.width, this.height);
-        for (let i = 0; i < this.cellArray.length; i++){
+        for (let i = 0; i < this.cellArray.length; i++) {
             this.cellArray[i].draw(this.ctx);
         }
     }
@@ -129,7 +129,7 @@ const clampDimensions = (width, height) => {
             width = MAXIMUM_WIDTH;
         }
     }
-    else if(width < height) {
+    else if (width < height) {
         if (height > MAXIMUM_HEIGHT) {
             aspect = width / height;
             width = MAXIMUM_WIDTH * aspect;
@@ -137,8 +137,8 @@ const clampDimensions = (width, height) => {
         }
     }
     else {
-        if(height < 500){
-            return[MAXIMUM_WIDTH, MAXIMUM_HEIGHT];
+        if (height < 500) {
+            return [MAXIMUM_WIDTH, MAXIMUM_HEIGHT];
         }
     }
     return [width, height]
@@ -150,7 +150,7 @@ let effect;
 fileInput.onchange = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
-    
+
 
     reader.onload = event => {
         image.onload = () => {
@@ -160,7 +160,7 @@ fileInput.onchange = e => {
 
             canvas.width = width;
             canvas.height = height;
-            effect =  new convertToAscii(context, width, height);
+            effect = new convertToAscii(context, width, height);
             effect.draw(10);
             div.style.display = 'none';
         }
@@ -170,7 +170,7 @@ fileInput.onchange = e => {
     reader.readAsDataURL(file);
 }
 
-document.getElementById("save-btn").addEventListener('click', function(e) {
+document.getElementById("save-btn").addEventListener('click', function (e) {
     c.width = imageWidth;
     c.height = imageHeight;
     n = new convertToAscii(cx, c.width, c.height);
@@ -187,13 +187,13 @@ document.getElementById("save-btn").addEventListener('click', function(e) {
 const saveShadingVal = () => {
     if ($("#shade1").is(":checked")) {
         document.cookie = 'shading=1; Secure;';
-    } else if($("#shade2").is(":checked")) {
+    } else if ($("#shade2").is(":checked")) {
         document.cookie = 'shading=2; Secure;';
     }
 };
 
 const saveNewTab = () => {
-    if($("#new-tab-switch").is(":checked")) {
+    if ($("#new-tab-switch").is(":checked")) {
         document.cookie = 'new_tab=1; Secure';
     } else {
         document.cookie = 'new_tab=0; Secure';
@@ -201,7 +201,7 @@ const saveNewTab = () => {
 };
 
 const saveTipsVal = () => {
-    if($("#tips-switch").is(":checked")) {
+    if ($("#tips-switch").is(":checked")) {
         document.cookie = 'tips=1; Secure';
     } else {
         document.cookie = 'tips=0; Secure';
@@ -211,7 +211,7 @@ const saveTipsVal = () => {
 function checkToggleClick() {
     var is_on = $(this).prop("checked");
     saveNewTab();
-    if(is_on === true){
+    if (is_on === true) {
         $(this).prop("checked", true);
     } else {
         $(this).prop("checked", false);
@@ -221,26 +221,26 @@ function checkToggleClick() {
 $("#shading-dropdwn").click(() => {
     saveShadingVal();
     var is_on = $(".dropdown").attr("aria-expanded");
-    if(is_on === 'true'){
+    if (is_on === 'true') {
         $(".dropdown").attr("aria-expanded", "false");
     } else {
         $(".dropdown").attr("aria-expanded", "true");
     }
 });
 
- $("#close-settings-btn-mid").click(() => {
+$("#close-settings-btn-mid").click(() => {
     saveNewTab();
     saveTipsVal();
     var is_on = $(".dropdown").attr("aria-expanded");
 
-    if(is_on === 'true'){
+    if (is_on === 'true') {
         saveShadingVal();
         $(".dropdown").attr("aria-expanded", "false");
     }
 
     getCookieVal();
- })
+})
 
- $("#close-settings-btn").click(() => {
+$("#close-settings-btn").click(() => {
     location.reload();
- })
+})
