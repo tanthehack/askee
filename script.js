@@ -341,7 +341,7 @@ fileInput.onchange = e => {
             n = new convertToAscii(canvas_ctx, canvas.width, canvas.height);
             n.draw(6);
 
-            // convert to base64 data
+            // convert canvas image to base64 data
             image_data = canvas.toDataURL("image/png", 1.0);
 
             // create downscaled preview
