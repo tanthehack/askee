@@ -789,7 +789,7 @@ input[type="checkbox"] {
     }
 
     .tips-content {
-        height: 300px;
+        height: 100%;
         width: 500px;
         overflow-y: scroll;
     }

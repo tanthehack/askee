@@ -281,6 +281,13 @@ class convertToAscii {
             this.cellArray[i].draw(this.ctx);
         }
     }
+
+    changeBg() {
+        //change background color of canvas
+        canvas_ctx.globalCompositeOperation = 'destination-over'
+        canvas_ctx.fillStyle = "#272727";
+        canvas_ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 }
 
 // scales image to fit in a window of specified size
@@ -322,9 +329,11 @@ fileInput.onchange = e => {
 
             n = new convertToAscii(canvas_ctx, canvas.width, canvas.height);
             n.draw(6);
+            n.changeBg();
 
             // convert canvas image to base64 data
             image_data = canvas.toDataURL("image/png", 1.0);
+            console.log(image_data)
 
             // create downscaled preview
             const [width, height] = clampDimensions(image.width, image.height);
@@ -354,8 +363,17 @@ document.getElementById("save-btn").addEventListener('click', function (e) {
     const link = document.createElement('a');
     link.href = image_data;
 
+    let iframe = "<iframe src='" + image_data + "'></iframe>"
+
     if (open_new_tab) {
-        link.target = "_blank";
+        let x = window.open();
+        x.document.body.style.margin = 0;
+        x.document.open();
+        x.document.write(iframe);
+        x.document.getElementsByTagName("iframe")[0].style.width = '100%';
+        x.document.getElementsByTagName("iframe")[0].style.height = '100%';
+        x.document.getElementsByTagName("iframe")[0].style.border = 0;
+        x.document.close();
     } else {
         link.download = "my-ascii-image.png";
     }
