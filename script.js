@@ -288,6 +288,7 @@ class convertToAscii {
         canvas_ctx.fillStyle = "#272727";
         canvas_ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
+
 }
 
 // scales image to fit in a window of specified size
