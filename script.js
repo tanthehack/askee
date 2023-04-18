@@ -159,24 +159,6 @@ function is_cookie_changed() {
                     return true;
                 }
                 break;
-
-            // ↓ only triggers reload if shading is changed
-            // for others, simply set cookie and repaint UI
-            //
-            // uncomment to reload on ANY change
-
-            // case 'new_tab':
-            //     if (val != tabSwitchTgl.checked) {
-            //         return true;
-            //     }
-            //     break;
-
-            // case 'tips':
-            //     if (val != tipsSwitchTgl.checked) {
-            //         return true;
-            //     }
-            //     break;
-
             default:
                 break;
         }

@@ -3,7 +3,7 @@ const time_line = gsap.timeline({ defaults: { duration: 0.75, ease: 'power1.out'
 const tipsClose = document.getElementsByClassName("close-tips");
 const tipsContainer = document.getElementsByClassName("visible-state");
 const tipsNext = document.getElementsByClassName("next-btn");
-const tipsBack = document.getElementsByClassName("back-tips");
+const tipsBack = document.getElementsByClassName("back-btn");
 
 function open_tips() {
     window.scrollTo({
