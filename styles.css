@@ -158,9 +158,12 @@ nav {
     border: 2.5px dashed #e5e3e3;
     filter: drop-shadow(7px 7px #181717);
     position: absolute;
+
+    z-index: 4;
 }
 
 .save-settings-content {
+    z-index: 4;
     display: flex;
     flex-direction: column;
     align-items: center;
